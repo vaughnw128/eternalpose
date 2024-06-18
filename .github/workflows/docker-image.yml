@@ -1,7 +1,9 @@
+name: Build Image
+
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   docker:
