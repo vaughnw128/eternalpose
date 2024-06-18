@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/go-co-op/gocron/v2"
 	"github.com/gocolly/colly"
-	"github.com/joho/godotenv"
 	"io"
 	"log/slog"
 	"net/http"
@@ -40,10 +40,11 @@ type WebhookMessage struct {
 }
 
 var (
-	logger = slog.New(slog.NewTextHandler(os.Stdout, nil))
+	mangaSite = "https://tcbscans.com"
+	logger    = slog.New(slog.NewTextHandler(os.Stdout, nil))
 )
 
-func updateChapter(title string) {
+func updateChapter(title string, cNum int) {
 	// Update the chapter number in manga.json
 	var mangaData []Manga
 	jsonFile, _ := os.Open("manga.json")
@@ -60,7 +61,7 @@ func updateChapter(title string) {
 	// Update the chapter number
 	for i, manga := range mangaData {
 		if manga.Title == title {
-			mangaData[i].CurrentChapter += 1
+			mangaData[i].CurrentChapter = cNum
 		}
 	}
 
@@ -138,28 +139,20 @@ func sendManga(title string, link string, users []string) {
 	}(resp.Body)
 }
 
-func main() {
-	err := godotenv.Load()
-
-	mangaSite := "https://tcbscans.com"
-
-	logger.Info("Starting EternalPose")
-
+func scrapeManga() {
 	// Import manga data from file
 	var mangaData []Manga
 
 	jsonFile, _ := os.Open("manga.json")
 	jsonBytes, _ := io.ReadAll(jsonFile)
-	err = jsonFile.Close()
+	err := jsonFile.Close()
 	if err != nil {
 		logger.Error("Unable to close file: ", err)
-		return
 	}
 
 	err = json.Unmarshal(jsonBytes, &mangaData)
 	if err != nil {
 		logger.Error("Unable to unmarshal JSON: ", err)
-		return
 	}
 
 	c := colly.NewCollector()
@@ -177,7 +170,7 @@ func main() {
 				chapterNumber, _ := strconv.Atoi(matches[r.SubexpIndex("Chapter")])
 				if chapterNumber > manga.CurrentChapter {
 					sendManga(mangaTitle, mangaLink, manga.Users)
-					updateChapter(manga.Title)
+					updateChapter(manga.Title, chapterNumber)
 				}
 			}
 		}
@@ -186,6 +179,37 @@ func main() {
 	err = c.Visit(mangaSite)
 	if err != nil {
 		logger.Error("Unable to visit TCBScans: ", err)
-		return
 	}
+}
+
+func main() {
+
+	logger.Info("Starting EternalPose")
+
+	// Initialize cron scheduler
+	s, err := gocron.NewScheduler()
+	if err != nil {
+		logger.Error("Unable to start scheduler: ", err)
+	}
+
+	_, err = s.NewJob(
+		gocron.CronJob(
+			"* * * * *",
+			false,
+		),
+		gocron.NewTask(
+			scrapeManga,
+		),
+	)
+	if err != nil {
+		logger.Error("Unable to create job: ", err)
+	}
+
+	// Log the job
+	logger.Info("Manga scraping cron job started")
+
+	// start the scheduler
+	s.Start()
+
+	select {}
 }

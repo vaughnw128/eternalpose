@@ -1,6 +1,7 @@
 # eternalpose
 
-Minimal manga alerting application as a first project in Go.
+Minimal manga alerting application as a first project in Go. I figured this would be a good first project as it covers
+web scraping, error handling, text parsing, scheduling, and how to deploy go code to containers.
 
 I read One Piece weekly, and my friends quite like Jujutsu Kaisen. 
 This will let us know when the next chapter is out!
@@ -34,7 +35,37 @@ a regex term to search for on TCBScans, and the current chapter.
 
 ## Running
 
-```bash
+Set up environment variables in a file called .env
+
+```shell
+export WEBHOOK_URL=https://discord.com/api/webhooks/123/456
+```
+
+Source those env files with:
+
+```shell
+$ source .env
+```
+
+Finally it can be run:
+
+```shell
 $ go build cmd/eternalpose/main.go
 $ ./main
+```
+
+The program will run eternally, and run the scheduled manga scraping job once per hour, every day of the week.
+
+## Dockerizing
+
+The docker image can be built pretty easily:
+
+```shell
+$ docker build . --tag eternalpose
+```
+
+Then run the dockerfile with the environment variable:
+
+```shell
+$ docker run -dit -e WEBHOOK_URL="https://discord.com/api/webhooks/123/456" --name eternalpose-service eternalpose
 ```
