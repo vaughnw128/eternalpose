@@ -9,7 +9,8 @@ This will let us know when the next chapter is out!
 ## Configuration
 
 Manga can be specified in `mangas.json` by specifying a manga title, 
-a regex term to search for on TCBScans, and the current chapter.
+a regex term to search for on TCBScans, and the current chapter. This JSON is also used as simple storage of 
+the current chapter so as not to resend the same chapter many times.
 
 ```json
 [
@@ -47,7 +48,7 @@ Source those env files with:
 $ source .env
 ```
 
-Finally it can be run:
+Finally, it can be run:
 
 ```shell
 $ go build cmd/eternalpose/main.go
