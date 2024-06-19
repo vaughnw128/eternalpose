@@ -70,3 +70,17 @@ Then run the dockerfile with the environment variable:
 ```shell
 $ docker run -dit -e WEBHOOK_URL="https://discord.com/api/webhooks/123/456" --name eternalpose-service eternalpose
 ```
+
+## Deploying to Kubernetes
+
+First, the discord webhook needs to be initialized as a secret:
+
+```shell
+$ kubectl create secret generic discord-webhook -n eternalpose --from-literal="discord-webhook=https://discord.com/api/webhooks/123/456"
+```
+
+Once the secret has been created, the application can be deployed:
+
+```shell
+$ kubectl apply -f eternalpose.yml
+```
