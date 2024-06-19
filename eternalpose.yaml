@@ -16,7 +16,7 @@ spec:
       containers:
       - name: "eternalpose"
         image: "ghcr.io/vaughnw128/eternalpose:latest"
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         resources:
           limits:
             cpu: 100m
