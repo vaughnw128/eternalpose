@@ -194,7 +194,7 @@ func main() {
 
 	_, err = s.NewJob(
 		gocron.CronJob(
-			"* * * * *",
+			"0 * * * *",
 			false,
 		),
 		gocron.NewTask(
