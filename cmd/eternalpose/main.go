@@ -176,6 +176,10 @@ func scrapeManga() {
 		}
 	})
 
+	c.OnRequest(func(r *colly.Request) {
+		logger.Info("Visiting ", r.URL.String())
+	})
+
 	err = c.Visit(mangaSite)
 	if err != nil {
 		logger.Error("Unable to visit TCBScans: ", err)
