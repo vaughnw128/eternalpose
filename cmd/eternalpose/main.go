@@ -210,7 +210,7 @@ func main() {
 	}
 
 	// Log the job
-	logger.Info("Manga scraping cron job started")
+	logger.Info("Manga scraping cron job started [0 * * * *]")
 
 	// start the scheduler
 	s.Start()
