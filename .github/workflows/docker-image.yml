@@ -28,9 +28,7 @@ jobs:
           context: .
           file: Dockerfile
           push: ${{ github.ref == 'refs/heads/master' }}
-          cache-from: type=registry,ref=ghcr.io/vaughnw128/eternalpose:latest
-          cache-to: type=inline
           tags: |
-            ghcr.io/vaughnw128/eternalpose:latest
+            ghcr.io/vaughnw128/eternalpose:$(date +%s)
           build-args: |
             git_sha=${{ github.sha }}
