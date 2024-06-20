@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: "eternalpose"
-        image: "ghcr.io/vaughnw128/eternalpose:latest"
+        image: "ghcr.io/vaughnw128/eternalpose"
         imagePullPolicy: Always
         resources:
           limits:
