@@ -51,11 +51,11 @@ func updateChapter(title string, cNum int) {
 	jsonBytes, _ := io.ReadAll(jsonFile)
 	err := json.Unmarshal(jsonBytes, &mangaData)
 	if err != nil {
-		logger.Error("Unable to unmarshal manga.json: ", err)
+		logger.Error(fmt.Sprintf("Unable to unmarshal manga.json: %s", err))
 	}
 	err = jsonFile.Close()
 	if err != nil {
-		logger.Error("Unable to close manga.json: ", err)
+		logger.Error(fmt.Sprintf("Unable to close manga.json: %s", err))
 	}
 
 	// Update the chapter number
@@ -69,7 +69,7 @@ func updateChapter(title string, cNum int) {
 	jsonBytes, _ = json.Marshal(mangaData)
 	err = os.WriteFile("manga.json", jsonBytes, 0644)
 	if err != nil {
-		logger.Error("Unable to write to manga.json: ", err)
+		logger.Error(fmt.Sprintf("Unable to write to manga.json: %s", err))
 	}
 
 }
@@ -95,7 +95,7 @@ func getCover(link string) string {
 
 	err := c.Visit(link)
 	if err != nil {
-		logger.Error("Error visiting the manga chapter page: ", err)
+		logger.Error(fmt.Sprintf("Error visiting the manga chapter page: %s", err))
 	}
 
 	c.Wait()
@@ -124,7 +124,7 @@ func sendManga(title string, link string, users []string) {
 	}
 	jsonData, err := json.Marshal(data)
 	if err != nil {
-		logger.Error("Unable to marshal JSON for webhook posting: ", err)
+		logger.Error(fmt.Sprintf("Unable to marshal JSON for webhook posting: %s", err))
 	}
 	logger.Info(fmt.Sprintf("Sending %s to webhook.", title))
 	resp, err := http.Post(webhookURL, "application/json", bytes.NewBuffer(jsonData))
@@ -134,7 +134,7 @@ func sendManga(title string, link string, users []string) {
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
-			logger.Error("Unable to close response object: ", err)
+			logger.Error(fmt.Sprintf("Unable to close response object: %s", err))
 		}
 	}(resp.Body)
 }
@@ -147,12 +147,12 @@ func scrapeManga() {
 	jsonBytes, _ := io.ReadAll(jsonFile)
 	err := jsonFile.Close()
 	if err != nil {
-		logger.Error("Unable to close file: ", err)
+		logger.Error(fmt.Sprintf("Unable to close file: %s", err))
 	}
 
 	err = json.Unmarshal(jsonBytes, &mangaData)
 	if err != nil {
-		logger.Error("Unable to unmarshal JSON: ", err)
+		logger.Error(fmt.Sprintf("Unable to unmarshal JSON: %s", err))
 	}
 
 	c := colly.NewCollector()
@@ -177,12 +177,12 @@ func scrapeManga() {
 	})
 
 	c.OnRequest(func(r *colly.Request) {
-		logger.Info("Visiting ", r.URL.String())
+		logger.Info(fmt.Sprintf("Visiting %s", r.URL.String()))
 	})
 
 	err = c.Visit(mangaSite)
 	if err != nil {
-		logger.Error("Unable to visit TCBScans: ", err)
+		logger.Error(fmt.Sprintf("Unable to visit TCBScans: %s", err))
 	}
 }
 
@@ -193,7 +193,7 @@ func main() {
 	// Initialize cron scheduler
 	s, err := gocron.NewScheduler()
 	if err != nil {
-		logger.Error("Unable to start scheduler: ", err)
+		logger.Error(fmt.Sprintf("Unable to start scheduler: %s", err))
 	}
 
 	_, err = s.NewJob(
@@ -206,7 +206,7 @@ func main() {
 		),
 	)
 	if err != nil {
-		logger.Error("Unable to create job: ", err)
+		logger.Error(fmt.Sprintf("Unable to create job: %s", err))
 	}
 
 	// Log the job
