@@ -73,6 +73,8 @@ $ docker run -dit -e WEBHOOK_URL="https://discord.com/api/webhooks/123/456" --na
 
 ## Deploying to Kubernetes
 
+Details on the deployment to kubernetes can be found at [vaughnw128/k8s-infra](https://github.com/vaughnw128/k8s-infra)
+
 First, the discord webhook needs to be initialized as a secret:
 
 ```shell
