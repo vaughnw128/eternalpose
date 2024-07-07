@@ -19,7 +19,7 @@ type Manga struct {
 	Title          string   `json:"title"`
 	Regex          string   `json:"regex"`
 	Users          []string `json:"users"`
-	CurrentChapter int      `json:"currentChapter"`
+	CurrentChapter float64  `json:"currentChapter"`
 }
 
 type Image struct {
@@ -44,7 +44,7 @@ var (
 	logger    = slog.New(slog.NewTextHandler(os.Stdout, nil))
 )
 
-func updateChapter(title string, cNum int) {
+func updateChapter(title string, cNum float64) {
 	// Update the chapter number in manga.json
 	var mangaData []Manga
 	jsonFile, _ := os.Open("manga.json")
@@ -129,7 +129,7 @@ func sendManga(title string, link string, users []string) {
 	logger.Info(fmt.Sprintf("Sending %s to webhook.", title))
 	resp, err := http.Post(webhookURL, "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
-		logger.Error("Unable to send JSON: ", err)
+		logger.Error(fmt.Sprintf("Unable to send JSON: %s", err))
 	}
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
@@ -167,7 +167,7 @@ func scrapeManga() {
 
 			//If it matches, get chapter number, send the manga, then update chapter
 			if matches != nil {
-				chapterNumber, _ := strconv.Atoi(matches[r.SubexpIndex("Chapter")])
+				chapterNumber, _ := strconv.ParseFloat(matches[r.SubexpIndex("Chapter")], 64)
 				if chapterNumber > manga.CurrentChapter {
 					sendManga(mangaTitle, mangaLink, manga.Users)
 					updateChapter(manga.Title, chapterNumber)
@@ -198,7 +198,7 @@ func main() {
 
 	_, err = s.NewJob(
 		gocron.CronJob(
-			"0 * * * *",
+			"* * * * *",
 			false,
 		),
 		gocron.NewTask(
