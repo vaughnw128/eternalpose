@@ -40,7 +40,7 @@ type WebhookMessage struct {
 }
 
 var (
-	mangaSite = "https://tcbscans.com"
+	mangaSite = "https://tcbscans.me"
 	logger    = slog.New(slog.NewTextHandler(os.Stdout, nil))
 )
 

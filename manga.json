@@ -1,1 +1,1 @@
-[{"title":"One Piece","regex":"One Piece Chapter (?P\u003cChapter\u003e\\d{4})$","users":["\u003c@173232081575346178\u003e"],"currentChapter":1119},{"title":"Jujutsu Kaisen","regex":"Jujutsu Kaisen Chapter (?P\u003cChapter\u003e\\d{3}(.\\d|)$)$","users":["\u003c@228997488563060736\u003e","\u003c@262637906865291264\u003e"],"currentChapter":262}]
+[{"title":"One Piece","regex":"One Piece Chapter (?P\u003cChapter\u003e\\d{4})$","users":["\u003c@173232081575346178\u003e"],"currentChapter":1128}]
