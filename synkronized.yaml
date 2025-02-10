@@ -1,0 +1,5 @@
+synkronized:
+  name: eternalpose
+  template: single-container
+config:
+  size: micro
