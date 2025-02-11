@@ -3,3 +3,6 @@ synkronized:
   template: single-container
 config:
   size: micro
+  vaultSecrets:
+    - name: "WEBHOOK_URL"
+      path: "eternalpose/webhook-url"
