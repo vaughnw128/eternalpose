@@ -196,6 +196,8 @@ func main() {
 		logger.Error(fmt.Sprintf("Unable to start scheduler: %s", err))
 	}
 
+	scrapeManga()
+
 	_, err = s.NewJob(
 		gocron.CronJob(
 			"0 * * * *",
