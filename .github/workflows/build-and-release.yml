@@ -60,4 +60,4 @@ jobs:
           repo: ${{ env.ENV_REPO }}
           token: ${{ secrets.RELEASE_TOKEN }}
           inputs: '{"tag_name": "${{ needs.build.outputs.tag }}", "app_repo": "${{ github.event.repository.name }}", "image": "${{ github.event.repository.full_name }}:${{ needs.build.outputs.tag }}"}'
-          ref: refs/heads/master
+          ref: refs/heads/main
