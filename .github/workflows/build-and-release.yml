@@ -54,10 +54,11 @@ jobs:
       - name: Open Immanent Grove PR
         env:
           ENV_REPO: ${{ github.event.repository.owner.name }}/immanent-grove
+          TAG: ${{ needs.build.outputs.tag }}
         uses: benc-uk/workflow-dispatch@v1.2.4
         with:
           workflow: application-update.yml
           repo: ${{ env.ENV_REPO }}
           token: ${{ secrets.RELEASE_TOKEN }}
-          inputs: '{"tag_name": "${{ needs.build.outputs.tag }}", "app_repo": "${{ github.event.repository.name }}", "image": "${{ github.event.repository.full_name }}:${{ needs.build.outputs.tag }}"}'
+          inputs: '{"tag_name": "${TAG##:*}", "app_repo": "${{ github.event.repository.name }}", "image": "${{ github.event.repository.full_name }}:${TAG##:*}"}'
           ref: refs/heads/main
