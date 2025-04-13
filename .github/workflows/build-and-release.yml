@@ -51,14 +51,18 @@ jobs:
     needs:
       - build
     steps:
+      - name: Split tag name
+        env:
+          TAG: ${{ needs.build.outputs.tag }}
+        id: split
+        run: echo "tag=${TAG##:*}" >> $GITHUB_OUTPUT
       - name: Open Immanent Grove PR
         env:
           ENV_REPO: ${{ github.event.repository.owner.name }}/immanent-grove
-          TAG: ${{ needs.build.outputs.tag }}
         uses: benc-uk/workflow-dispatch@v1.2.4
         with:
           workflow: application-update.yml
           repo: ${{ env.ENV_REPO }}
           token: ${{ secrets.RELEASE_TOKEN }}
-          inputs: '{"tag_name": "${TAG##:*}", "app_repo": "${{ github.event.repository.name }}", "image": "${{ github.event.repository.full_name }}:${TAG##:*}"}'
+          inputs: '{"tag_name": "${{ steps.split.outputs.tag }}", "app_repo": "${{ github.event.repository.name }}", "image": "${{ github.event.repository.full_name }}:${{ steps.split.outputs.tag }}"}'
           ref: refs/heads/main
