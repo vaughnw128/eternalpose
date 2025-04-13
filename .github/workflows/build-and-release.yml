@@ -55,7 +55,7 @@ jobs:
         env:
           TAG: ${{ needs.build.outputs.tag }}
         id: split
-        run: echo "tag=${TAG##:*}" >> $GITHUB_OUTPUT
+        run: echo "tag=$(echo $TAG | cut -d ':' -f2)" >> $GITHUB_OUTPUT
       - name: Open Immanent Grove PR
         env:
           ENV_REPO: ${{ github.event.repository.owner.name }}/immanent-grove
